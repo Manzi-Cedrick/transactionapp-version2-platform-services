@@ -2,8 +2,12 @@ package com.example.transactionappv2.controllers;
 
 import com.example.transactionappv2.models.ParentTransaction;
 import com.example.transactionappv2.repositories.ParentTransactionRepository;
+import com.example.transactionappv2.util.PaginationTransactionRequest;
+import com.example.transactionappv2.util.PaginationUtils;
 import com.example.transactionappv2.util.ResponseSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +24,12 @@ public class ParentTransactionController {
         return new ResponseSerializer("Welcome at Transaction Application API Services. Thrilled to have you here.");
     }
     @GetMapping(path = "/transaction")
-    public List<ParentTransaction> getAllTransaction(){
-        return parentRepository.findAll();
+    public List<ParentTransaction> getAllTransaction(PaginationTransactionRequest paginationTransactionRequest){
+        Pageable pageable = PaginationUtils.createPageable(paginationTransactionRequest);
+        Page<ParentTransaction> transactionPage = parentRepository.findAll(pageable);
+        return transactionPage.getContent();
     }
+
     @PostMapping(path = "/transaction/record/new")
     public ParentTransaction postTransaction(@RequestBody ParentTransaction transaction){
         return parentRepository.save(transaction);
