@@ -12,7 +12,7 @@ import lombok.ToString;
 public class ParentTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public String id;
+    public Integer id;
 
     public String sender;
 
