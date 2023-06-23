@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ResponseSerializer {
+public class ResponseSerializer extends Throwable {
     private String message;
 }
