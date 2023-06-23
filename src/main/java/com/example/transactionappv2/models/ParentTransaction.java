@@ -1,5 +1,6 @@
 package com.example.transactionappv2.models;
 
+import com.example.transactionappv2.enums.SortDirection;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +20,5 @@ public class ParentTransaction {
     public String receiver;
 
     public Number totalAmount;
+    private SortDirection sortDirection;
 }
