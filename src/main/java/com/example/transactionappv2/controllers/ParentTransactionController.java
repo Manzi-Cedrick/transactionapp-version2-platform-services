@@ -1,13 +1,10 @@
 package com.example.transactionappv2.controllers;
 
 import com.example.transactionappv2.models.ParentTransaction;
-import com.example.transactionappv2.repositories.ParentTransactionRepository;
+import com.example.transactionappv2.services.ParentTransactionService;
 import com.example.transactionappv2.util.PaginationTransactionRequest;
-import com.example.transactionappv2.util.PaginationUtils;
 import com.example.transactionappv2.util.ResponseSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +13,7 @@ import java.util.Optional;
 @RestController
 public class ParentTransactionController {
     @Autowired
-    ParentTransactionRepository parentRepository;
-
+    ParentTransactionService parentTransactionService;
     @GetMapping(path = "/")
     @ResponseBody
     public ResponseSerializer getInitialSetupInfo () {
@@ -25,45 +21,25 @@ public class ParentTransactionController {
     }
     @GetMapping(path = "/transaction")
     public List<ParentTransaction> getAllTransaction(PaginationTransactionRequest paginationTransactionRequest){
-        Pageable pageable = PaginationUtils.createPageable(paginationTransactionRequest);
-        Page<ParentTransaction> transactionPage = parentRepository.findAll(pageable);
-        return transactionPage.getContent();
+        return parentTransactionService.getAllTransaction(paginationTransactionRequest);
     }
 
     @PostMapping(path = "/transaction/record/new")
     public ParentTransaction postTransaction(@RequestBody ParentTransaction transaction){
-        return parentRepository.save(transaction);
+        return parentTransactionService.createTransaction(transaction);
     }
     @GetMapping(path = "/transaction/{id}")
     public Optional<ParentTransaction> listSingleTransaction(@PathVariable("id") int id){
-        return parentRepository.findById(id);
+        return parentTransactionService.listSingleTransaction(id);
     }
     @DeleteMapping(path = "/transaction/{id}")
     @ResponseBody
     public ResponseSerializer deleteData(@PathVariable("id") int id){
-        parentRepository.deleteById(id);
-        return new ResponseSerializer("Transaction Removed");
+        return parentTransactionService.deleteTransaction(id);
     }
     @PutMapping("/transaction/{id}")
     public ParentTransaction updateTransaction(@PathVariable("id") int id, @RequestBody ParentTransaction transaction) {
-        Optional<ParentTransaction> optionalTransaction = parentRepository.findById(id);
-        if (optionalTransaction.isEmpty()) {
-            return null;
-        }
-
-        ParentTransaction existingTransaction = optionalTransaction.get();
-
-        if (transaction.getSender() != null) {
-            existingTransaction.setSender(transaction.getSender());
-        }
-        if (transaction.getReceiver() != null) {
-            existingTransaction.setReceiver(transaction.getReceiver());
-        }
-        if (transaction.getTotalAmount() != null) {
-            existingTransaction.setTotalAmount(transaction.getTotalAmount());
-        }
-
-        return parentRepository.save(existingTransaction);
+        return parentTransactionService.updateTransaction(id, transaction);
     }
 
 }
