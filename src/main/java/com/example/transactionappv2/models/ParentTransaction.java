@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @ToString
 @Getter
 @Setter
@@ -21,4 +23,13 @@ public class ParentTransaction {
 
     public Number totalAmount;
     private SortDirection sortDirection;
+    @OneToMany(mappedBy = "parentId", cascade = CascadeType.ALL)
+    private List<ChildInstallment> childInstallments;
+
+    public ParentTransaction() {
+    }
+
+    public ParentTransaction(Integer id) {
+        this.id = id;
+    }
 }
